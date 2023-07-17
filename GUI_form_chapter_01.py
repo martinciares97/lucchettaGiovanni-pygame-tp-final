@@ -1,5 +1,9 @@
 import pygame
 from pygame.locals import *
+
+from os import listdir
+from os.path import join, isfile
+
 from class_platform import Platform
 from class_player import Character
 from constantes import *
@@ -15,9 +19,6 @@ from player import Player
 from enemigo import Enemy
 from background import Background, Parallax
 from bullet import Bullet
-from os import listdir
-from os.path import join, isfile
-
 from support import Support
 
 
@@ -42,10 +43,12 @@ class FormChapter01(Form):
         self.enemy_list = []
         self.block_list = []
 
-        self.SPRITES = Support.load_sprite_sheets("MainCharacters", "MaskDude", 32, 32)
-        self.SPRITES_P2 = Support.load_sprite_sheets("MainCharacters", "1x", 64, 64)
+        self.SPRITES = Support.load_sprite_sheets(
+            dir1="character", dir2="MaskDude", width=32, height=32
+        )
+        self.SPRITES_P2 = Support.load_sprite_sheets("character", "1x", 64, 64)
         self.items = Support.load_sprite_sheets(
-            dir1="Items", dir2="Fruits", width=32, height=32, direction=False
+            dir1="items", dir2="Fruits", width=32, height=32, direction=False
         )
         self.block_size = 96
 
@@ -145,7 +148,12 @@ class FormChapter01(Form):
                     )
 
         self.bg_parallax = Parallax(
-            0, 0, ANCHO_VENTANA, ALTO_VENTANA, None, "assets/Background/The Dawn/"
+            0,
+            0,
+            ANCHO_VENTANA,
+            ALTO_VENTANA,
+            None,
+            "assets/Background/The Dawn/Layers/",
         )
 
         self.bt_pause = Button(
@@ -375,7 +383,7 @@ class FormChapter01(Form):
                     x_end=self.jugador.rect.centerx,
                     y_end=self.jugador.rect.centery,
                     speed=20,
-                    path="assets/MainCharacters/1x/range-projectile.png",
+                    path="assets/character/1x/range-projectile.png",
                     frame_rate_ms=100,
                     move_rate_ms=20,
                     width=5,
@@ -405,7 +413,7 @@ class FormChapter01(Form):
                 x_end=self.dir_shoot_x,
                 y_end=self.get_position()[1] - 90,
                 speed=10,
-                path="assets/MainCharacters/1x/range-projectile.png",
+                path="assets/character/1x/range-projectile.png",
                 frame_rate_ms=80,
                 move_rate_ms=40,
                 width=200,

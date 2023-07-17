@@ -43,8 +43,8 @@ class FormChapter02(Form):
         self.enemy_list = []
         self.block_list = []
 
-        self.SPRITES = Support.load_sprite_sheets("MainCharacters", "MaskDude", 32, 32)
-        self.SPRITES_P2 = Support.load_sprite_sheets("MainCharacters", "1x", 64, 64)
+        self.SPRITES = Support.load_sprite_sheets("character", "MaskDude", 32, 32)
+        self.SPRITES_P2 = Support.load_sprite_sheets("character", "1x", 64, 64)
         self.items = Support.load_sprite_sheets(
             dir1="Items", dir2="Fruits", width=32, height=32, direction=False
         )
@@ -393,7 +393,7 @@ class FormChapter02(Form):
                 x_end=self.dir_shoot_x,
                 y_end=self.get_position()[1],
                 speed=10,
-                path="assets/MainCharacters/1x/range-projectile.png",
+                path="assets/character/1x/range-projectile.png",
                 frame_rate_ms=80,
                 move_rate_ms=40,
                 width=200,

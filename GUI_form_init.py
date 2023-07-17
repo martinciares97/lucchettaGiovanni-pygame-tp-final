@@ -21,7 +21,7 @@ class FormInit(Form):
 
         # self.bg_parallax = Auxiliar.get_parallax("assets/Background/The Dawn/")
         self.bg_parallax = Parallax(
-            0, 0, ANCHO_VENTANA, ALTO_VENTANA, None, "assets/Background/The Dawn/"
+            0, 0, ANCHO_VENTANA, ALTO_VENTANA, None, "assets/Background/The Dawn/Layers"
         )
         self.label_01 = Label(
             master=self,

@@ -29,7 +29,7 @@ class FormSettings(Form):
         self.flag_play = True
 
         pygame.mixer.init()
-        pygame.mixer.music.load("assets/Sound/24-prison-toys/01 Lure Of The Maw.mp3")
+        pygame.mixer.music.load("assets/sound/24-prison-toys/01 Lure Of The Maw.mp3")
         pygame.mixer.music.set_volume(self.volume)
         pygame.mixer.music.play(-1)
 
@@ -47,7 +47,7 @@ class FormSettings(Form):
             text="Volumen +",
             font="minimalPixel",
             font_size=50,
-            font_color=C_WHITE,
+            font_color=WHITE,
         )
         self.bt_2 = Button(
             master=self,
@@ -63,7 +63,7 @@ class FormSettings(Form):
             text="Volumen -",
             font="minimalPixel",
             font_size=50,
-            font_color=C_WHITE,
+            font_color=WHITE,
         )
         self.label01 = Label(
             master=self,
@@ -106,7 +106,7 @@ class FormSettings(Form):
         #     text="SQL",
         #     font="minimalPixel",
         #     font_size=50,
-        #     font_color=C_WHITE,
+        #     font_color=WHITE,
         # )
         # self.bt_4 = Button(
         #     master=self,
@@ -122,7 +122,7 @@ class FormSettings(Form):
         #     text="Vector",
         #     font="minimalPixel",
         #     font_size=50,
-        #     font_color=C_WHITE,
+        #     font_color=WHITE,
         # )
 
         self.bt_sound_onoff = Button(
@@ -139,7 +139,7 @@ class FormSettings(Form):
             text="Master Volume",
             font="minimalPixel",
             font_size=50,
-            font_color=C_WHITE,
+            font_color=WHITE,
         )
 
         self.bt_5 = Button(
@@ -156,7 +156,7 @@ class FormSettings(Form):
             text="Back",
             font="minimalPixel",
             font_size=50,
-            font_color=C_WHITE,
+            font_color=WHITE,
         )
 
         self.txt1 = TextBox(

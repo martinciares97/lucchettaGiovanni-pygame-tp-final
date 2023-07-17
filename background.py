@@ -35,16 +35,15 @@ class Parallax(Background):
         self.delta_x = 0
         self.speed = 1
 
-    def get_parallax(self, path):
+    def get_parallax(self, path) -> list:
         images = [f for f in listdir(path) if isfile(join(path, f))]
         sprite_list = []
         for image in images:
             surface_sprite = pygame.image.load(join(path, image)).convert_alpha()
             sprite_list.append(
-                pygame.transform.scale(surface_sprite, (1100, ALTO_VENTANA))
+                pygame.transform.scale(surface_sprite, (ANCHO_VENTANA, ALTO_VENTANA))
             )
-            
-        
+
         return sprite_list
 
     def handle_move(self, events):
@@ -63,5 +62,3 @@ class Parallax(Background):
             for image in self.sprite_list:
                 screen.blit(image, ((x * 1100) - self.scroll * self.speed, 0))
                 self.speed += 0.1
-                
-        

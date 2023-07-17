@@ -24,7 +24,7 @@ class Support:
         return [pygame.transform.flip(sprite, True, False) for sprite in sprites]
 
     @staticmethod
-    def load_sprite_sheets(dir1, dir2, width, height, direction=True):
+    def load_sprite_sheets(dir1, dir2, width, height, direction=True) -> dict:
         path = join("assets", dir1, dir2)
         images = [f for f in listdir(path) if isfile(join(path, f))]
 
