@@ -1,5 +1,9 @@
 import pygame
 from pygame.locals import *
+
+from os import listdir
+from os.path import join, isfile
+
 from class_platform import Platform
 from class_player import Character
 from constantes import *
@@ -15,9 +19,6 @@ from player import Player
 from enemigo import Enemy
 from background import Background, Parallax
 from bullet import Bullet
-from os import listdir
-from os.path import join, isfile
-
 from support import Support
 
 
@@ -34,8 +35,7 @@ class FormChapter03(Form):
         self.you_win = False
         self.in_game = False
         self.tiempo_juego = 60000
-
-        self.items_looteados = 0
+        self.tiempo_disparo = 0
 
         self.platform_list = []
         self.bullet_list = []
@@ -43,12 +43,39 @@ class FormChapter03(Form):
         self.enemy_list = []
         self.block_list = []
 
-        self.SPRITES = Support.load_sprite_sheets("character", "MaskDude", 32, 32)
-        self.SPRITES_P2 = Support.load_sprite_sheets("character", "1x", 64, 64)
+        self.enemy_spritesheets = Support.load_sprite_sheets(
+            dir1="enemies", dir2="gruby", width=132, height=90
+        )
+
+        self.SPRITES = Support.load_sprite_sheets(
+            dir1="character", dir2="MaskDude", width=32, height=32
+        )
+        self.items_spritesheets = Support.load_sprite_sheets("character", "1x", 64, 64)
         self.items = Support.load_sprite_sheets(
-            dir1="Items", dir2="Fruits", width=32, height=32, direction=False
+            dir1="items", dir2="Fruits", width=32, height=32, direction=False
         )
         self.block_size = 96
+
+        self.gruby_enemy = Enemy(
+            s_sheet=self.enemy_spritesheets,
+            x=0,
+            y=0,
+            speed_walk=6,
+            speed_run=5,
+            gravity=14,
+            jump_power=30,
+            frame_rate_ms=150,
+            move_rate_ms=50,
+            jump_height=140,
+            p_scale=0.08,
+            interval_time_jump=300,
+        )
+
+    def init_level(self):
+        self.items_looteados = 0
+        self.tiempo_transcurrido = 0
+        self.score = 0
+        self.dir_shoot_x = 0
 
         for row_num, row in enumerate(MAPA):
             for column_num, column in enumerate(row):
@@ -56,7 +83,7 @@ class FormChapter03(Form):
                 y = row_num * 25
                 if column == "c":
                     self.jugador = Player(
-                        sprites=self.SPRITES_P2,
+                        sprites=self.items_spritesheets,
                         x=x,
                         y=y,
                         speed_walk=6,
@@ -125,6 +152,7 @@ class FormChapter03(Form):
                 if column == "e":
                     self.enemy_list.append(
                         Enemy(
+                            s_sheet=self.enemy_spritesheets,
                             x=x,
                             y=y,
                             speed_walk=6,
@@ -139,13 +167,14 @@ class FormChapter03(Form):
                         )
                     )
 
-    def init_level(self):
         self.bg_parallax = Parallax(
-            0, 0, ANCHO_VENTANA, ALTO_VENTANA, None, "assets/Background/The Dawn/"
+            0,
+            0,
+            ANCHO_VENTANA,
+            ALTO_VENTANA,
+            None,
+            "assets/Background/The Dawn/Layers/",
         )
-        self.tiempo_transcurrido = 0
-        self.score = 0
-        self.dir_shoot_x = 0
 
         self.bt_pause = Button(
             master=self,
@@ -159,9 +188,9 @@ class FormChapter03(Form):
             on_click=self.on_click_boton1,
             on_click_param="form_pause",
             text="Pause",
-            font="Verdana",
+            font="minimalPixel",
             font_size=30,
-            font_color=C_WHITE,
+            font_color=WHITE,
         )
 
         self.bt_shoot = Button(
@@ -176,9 +205,9 @@ class FormChapter03(Form):
             on_click=self.on_click_shoot,
             on_click_param="",
             text="SHOOT",
-            font="Verdana",
+            font="minimalPixel",
             font_size=30,
-            font_color=C_WHITE,
+            font_color=WHITE,
         )
 
         self.label_score = Label(
@@ -235,7 +264,7 @@ class FormChapter03(Form):
             color_background=BLACK,
             color_border=RED,
             image_background=None,
-            text=f"5",
+            text=f"{self.jugador.lives}",
             font="minimalPixel",
             font_size=90,
             font_color=WHITE,
@@ -302,8 +331,11 @@ class FormChapter03(Form):
         self.offset_x = 0  # compensacion desplazmiento en x
         self.scroll_area_width = 200
 
-    def set_score(self, score):
-        self.score += score
+    def set_widget(self):
+        self.label_time._text = f"{int(self.tiempo_transcurrido / 1000)}"
+        self.label_lives._text = f"{self.jugador.lives}"
+        self.label_score._text = f"{self.score}"
+        self.label_items._text = f"{self.items_looteados}"
 
     def colision_player(self):
         contador = 0
@@ -313,7 +345,7 @@ class FormChapter03(Form):
                 self.enemy_list.pop(contador)
                 self.score += 100
                 print(self.score)
-                contador += 1
+            contador += 1
 
     def colision_items(self):
         contador = 0
@@ -322,14 +354,15 @@ class FormChapter03(Form):
                 self.items_list.pop(contador)
                 self.score += 100
                 print(self.score)
-                contador += 1
+                self.items_looteados += 1
+            contador += 1
 
     def check_impact(self, plataform_list, enemy_list, player):
-        for aux_enemy in enemy_list:
+        for enemy in enemy_list:
             if (
                 self.is_active
-                and self.owner != aux_enemy
-                and self.collide_rect.colliderect(aux_enemy.rect)
+                and self.owner != enemy
+                and self.collide_rect.colliderect(enemy.rect)
             ):
                 print("IMPACTO ENEMY")
                 self.is_active = False
@@ -353,6 +386,13 @@ class FormChapter03(Form):
     def on_click_boton1(self, parametro):
         self.set_active(parametro)
 
+    def shoot_enemy(self, delta_ms):
+        self.tiempo_disparo += delta_ms
+
+        if self.tiempo_disparo >= 10000:
+            self.on_click_shoot("delta_ms")
+            self.tiempo_disparo = 0
+
     def on_click_shoot(self, parametro):
         for enemy in self.enemy_list:
             self.bullet_list.append(
@@ -363,7 +403,7 @@ class FormChapter03(Form):
                     x_end=self.jugador.rect.centerx,
                     y_end=self.jugador.rect.centery,
                     speed=20,
-                    path="images/gui/set_gui_01/Comic_Border/Bars/Bar_Segment05.png",
+                    path="assets/character/1x/range-projectile.png",
                     frame_rate_ms=100,
                     move_rate_ms=20,
                     width=5,
@@ -389,9 +429,9 @@ class FormChapter03(Form):
             Bullet(
                 owner=self.jugador,
                 x_init=self.jugador.collition_rect.centerx,
-                y_init=self.jugador.collition_rect.centery,
+                y_init=self.jugador.collition_rect.centery - 90,
                 x_end=self.dir_shoot_x,
-                y_end=self.get_position()[1],
+                y_end=self.get_position()[1] - 90,
                 speed=10,
                 path="assets/character/1x/range-projectile.png",
                 frame_rate_ms=80,
@@ -427,9 +467,11 @@ class FormChapter03(Form):
             self.jugador.lives = 0
             self.game_over_metod()
 
+        self.set_widget()
         self.harly_events(lista_eventos)
         self.game_over_metod()
         self.you_win_metod()
+        self.shoot_enemy(delta_ms)
 
         self.bg_parallax.handle_move(keys)
         self.bg_parallax.update()
@@ -443,8 +485,8 @@ class FormChapter03(Form):
         for enemy in self.enemy_list:
             enemy.update(delta_ms, self.platform_list)
 
-        self.main_char.handle_move(lista_eventos, keys, self.floor)
-        self.main_char.update(delta_ms)
+        # self.main_char.handle_move(lista_eventos, keys, self.floor)
+        # self.main_char.update(delta_ms)
 
         self.jugador.events(
             delta_ms,
@@ -460,15 +502,15 @@ class FormChapter03(Form):
     def draw(self):
         super().draw()
 
-        if (
-            self.main_char.rect.right - self.offset_x
-            >= ANCHO_VENTANA - self.scroll_area_width
-            and self.main_char.x_vel > 0
-        ) or (
-            self.main_char.rect.left - self.offset_x <= self.scroll_area_width
-            and self.main_char.x_vel < 0
-        ):
-            self.offset_x += self.main_char.x_vel
+        # if (
+        #     self.main_char.rect.right - self.offset_x
+        #     >= ANCHO_VENTANA - self.scroll_area_width
+        #     and self.main_char.x_vel > 0
+        # ) or (
+        #     self.main_char.rect.left - self.offset_x <= self.scroll_area_width
+        #     and self.main_char.x_vel < 0
+        # ):
+        #     self.offset_x += self.main_char.x_vel
 
         self.bg_parallax.draw(self.surface)
 
@@ -493,10 +535,31 @@ class FormChapter03(Form):
         for item in self.items_list:
             item.draw(self.offset_x)
 
-        self.main_char.draw()
+        # self.main_char.draw()
 
         self.jugador.draw(self.surface)
 
         if get_mode():
-            print("rect.x", self.main_char.rect.x, "rect.y", self.main_char.rect.y)
             pygame.draw.rect(self.surface, RED, self.main_char.rect, 3)
+
+            pygame.draw.rect(self.surface, RED, self.jugador.rect, 3)
+            pygame.draw.rect(self.surface, RED, self.jugador.collition_rect, 3)
+            pygame.draw.rect(self.surface, RED, self.jugador.ground_collition_rect, 3)
+
+            for enemy in self.enemy_list:
+                pygame.draw.rect(self.surface, RED, enemy.rect, 3)
+                pygame.draw.rect(self.surface, RED, enemy.collition_rect, width=3)
+
+            for block in self.floor:
+                pygame.draw.rect(self.surface, RED, block.rect, 3)
+
+            for platform in self.platform_list:
+                pygame.draw.rect(self.surface, RED, platform.rect, 3)
+
+            for bullet in self.bullet_list:
+                pygame.draw.rect(self.surface, RED, bullet.rect, 3)
+                pygame.draw.rect(self.surface, RED, bullet.collition_rect, width=3)
+                # pygame.draw.rect(self.surface, RED, rect=self.rect, width=3)
+
+            for item in self.items_list:
+                pygame.draw.rect(self.surface, RED, item.rect, 3)

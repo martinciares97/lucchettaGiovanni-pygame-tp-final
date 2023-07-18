@@ -47,7 +47,7 @@ class Bullet:
 
         self.is_active = True
 
-        self.collition_rect = pygame.Rect(
+        self.collision_rect = pygame.Rect(
             self.rect.centerx - 25,
             self.rect.centery - 25,
             50,
@@ -57,12 +57,12 @@ class Bullet:
     def change_x(self, delta_x):
         self.x = self.x + delta_x
         self.rect.x = int(self.x)
-        self.collition_rect.x = int(self.x) + self.rect.width / 2 - 25
+        self.collision_rect.x = int(self.x) + self.rect.width / 2 - 25
 
     def change_y(self, delta_y):
         self.y = self.y + delta_y
         self.rect.y = int(self.y)
-        self.collition_rect.y = int(self.y) + self.rect.height / 2 - 25
+        self.collision_rect.y = int(self.y) + self.rect.height / 2 - 25
 
     def do_movement(self, delta_ms, plataform_list, enemy_list, player):
         self.tiempo_transcurrido_move += delta_ms
@@ -82,7 +82,7 @@ class Bullet:
         if (
             self.is_active
             and self.owner != player
-            and self.collition_rect.colliderect(player.collition_rect)
+            and self.collision_rect.colliderect(player.collision_rect)
         ):
             print("IMPACTO PLAYER")
             player.receive_shoot()
@@ -92,7 +92,7 @@ class Bullet:
             if (
                 self.is_active
                 and self.owner != enemy
-                and self.collition_rect.colliderect(enemy.collition_rect)
+                and self.collision_rect.colliderect(enemy.collision_rect)
             ):
                 print("IMPACTO ENEMY")
                 enemy_list.pop(contador)

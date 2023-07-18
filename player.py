@@ -24,17 +24,17 @@ class Player:
         """
         self.run_r = Auxiliar.getSurfaceFromSpriteSheet("images/caracters/stink/run.png",15,1,scale=p_scale)[:12]
         """
-        self.animaciones = sprites
-        self.idle_r = self.animaciones["idle_right"]
-        self.idle_l = self.animaciones["idle_left"]
-        self.jump_r = self.animaciones["jump_right"]
-        self.jump_l = self.animaciones["jump_left"]
-        self.run_r = self.animaciones["run_right"]
-        self.run_l = self.animaciones["run_left"]
-        self.shoot_r = self.animaciones["shoot_right"]
-        self.shoot_l = self.animaciones["shoot_left"]
-        self.attack_r = self.animaciones["attack_right"]
-        self.attack_l = self.animaciones["attack_left"]
+        self.sprite_sheets = sprites
+        self.idle_r = self.sprite_sheets["idle_right"]
+        self.idle_l = self.sprite_sheets["idle_left"]
+        self.jump_r = self.sprite_sheets["jump_right"]
+        self.jump_l = self.sprite_sheets["jump_left"]
+        self.run_r = self.sprite_sheets["run_right"]
+        self.run_l = self.sprite_sheets["run_left"]
+        self.shoot_r = self.sprite_sheets["shoot_right"]
+        self.shoot_l = self.sprite_sheets["shoot_left"]
+        self.attack_r = self.sprite_sheets["attack_right"]
+        self.attack_l = self.sprite_sheets["attack_left"]
 
         self.frame = 0
         self.lives = 5
@@ -53,12 +53,12 @@ class Player:
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.collition_rect = pygame.Rect(
+        self.collision_rect = pygame.Rect(
             self.rect.left + 32, self.rect.bottom - 64, 64, 64
         )
-        self.ground_collition_rect = pygame.Rect(self.collition_rect)
-        self.ground_collition_rect.height = GROUND_COLLIDE_H
-        self.ground_collition_rect.y = y + self.rect.height - GROUND_COLLIDE_H
+        self.ground_collision_rect = pygame.Rect(self.collision_rect)
+        self.ground_collision_rect.height = GROUND_COLLIDE_H
+        self.ground_collision_rect.y = y + self.rect.height - GROUND_COLLIDE_H
 
         self.is_jump = False
         self.is_fall = False
@@ -146,13 +146,13 @@ class Player:
 
     def change_x(self, delta_x):
         self.rect.x += delta_x
-        self.collition_rect.x += delta_x
-        self.ground_collition_rect.x += delta_x
+        self.collision_rect.x += delta_x
+        self.ground_collision_rect.x += delta_x
 
     def change_y(self, delta_y):
         self.rect.y += delta_y
-        self.collition_rect.y += delta_y
-        self.ground_collition_rect.y += delta_y
+        self.collision_rect.y += delta_y
+        self.ground_collision_rect.y += delta_y
 
     def do_movement(self, delta_ms, plataform_list):
         self.tiempo_transcurrido_move += delta_ms
@@ -177,12 +177,12 @@ class Player:
     def is_on_plataform(self, plataform_list):
         retorno = False
 
-        if self.ground_collition_rect.bottom >= GROUND_LEVEL:
+        if self.ground_collision_rect.bottom >= GROUND_LEVEL:
             retorno = True
         else:
             for plataforma in plataform_list:
-                if self.ground_collition_rect.colliderect(
-                    plataforma.ground_collition_rect
+                if self.ground_collision_rect.colliderect(
+                    plataforma.ground_collision_rect
                 ):
                     retorno = True
                     break
@@ -262,9 +262,9 @@ class Player:
 
     def draw(self, screen):
         if get_mode():
-            pygame.draw.rect(screen, color=RED, rect=self.collition_rect, width=3)
+            pygame.draw.rect(screen, color=RED, rect=self.collision_rect, width=3)
             pygame.draw.rect(
-                screen, color=RED, rect=self.ground_collition_rect, width=3
+                screen, color=RED, rect=self.ground_collision_rect, width=3
             )
             pygame.draw.rect(screen, color=RED, rect=self.rect, width=3)
 

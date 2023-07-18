@@ -16,9 +16,9 @@ class Platform:
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.collition_rect = pygame.Rect(self.rect)
-        self.ground_collition_rect = pygame.Rect(self.rect)
-        self.ground_collition_rect.height = GROUND_COLLIDE_H
+        self.collision_rect = pygame.Rect(self.rect)
+        self.ground_collision_rect = pygame.Rect(self.rect)
+        self.ground_collision_rect.height = GROUND_COLLIDE_H
 
     def draw(self, offset_x):
         self.main_surface.blit(self.image, self.rect)

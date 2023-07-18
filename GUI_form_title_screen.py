@@ -17,10 +17,14 @@ class FormTitleScreen(Form):
             name, master_surface, x, y, w, h, color_background, color_border, active
         )
 
+        self.active_button_index = (
+            0  # Variable para rastrear el índice del botón activo
+        )
+
         self.bt_1 = Button(
             master=self,
             x=50,
-            y=100,
+            y=300,
             w=140,
             h=50,
             color_background=None,
@@ -36,7 +40,7 @@ class FormTitleScreen(Form):
         self.bt_2 = Button(
             master=self,
             x=50,
-            y=150,
+            y=350,
             w=140,
             h=50,
             color_background=None,
@@ -52,7 +56,7 @@ class FormTitleScreen(Form):
         self.bt_3 = Button(
             master=self,
             x=50,
-            y=200,
+            y=400,
             w=140,
             h=50,
             color_background=None,
@@ -68,7 +72,7 @@ class FormTitleScreen(Form):
         self.bt_4 = Button(
             master=self,
             x=50,
-            y=250,
+            y=450,
             w=140,
             h=50,
             color_background=None,
@@ -84,7 +88,7 @@ class FormTitleScreen(Form):
         self.bt_5 = Button(
             master=self,
             x=50,
-            y=300,
+            y=500,
             w=140,
             h=50,
             color_background=None,
@@ -130,7 +134,23 @@ class FormTitleScreen(Form):
         self.set_active(parametro)
 
     def update(self, lista_eventos, keys, delta_ms):
-        for aux_widget in self.lista_widget:
+        for event in lista_eventos:
+            if event.type == KEYDOWN:
+                if event.key == pygame.K_DOWN:
+                    self.active_button_index = (self.active_button_index + 1) % len(
+                        self.lista_widget
+                    )
+                elif event.key == pygame.K_UP:
+                    self.active_button_index = (self.active_button_index - 1) % len(
+                        self.lista_widget
+                    )
+                if event.key == pygame.K_SPACE:
+                    self.set_active(
+                        self.lista_widget[self.active_button_index].on_click_param
+                    )
+
+        for indice_wid, aux_widget in enumerate(self.lista_widget):
+            aux_widget.set_bt_active(indice_wid == self.active_button_index)
             aux_widget.update(lista_eventos)
 
     def draw(self):

@@ -3,6 +3,7 @@ from pygame.locals import *
 
 from os import listdir
 from os.path import join, isfile
+from class_archer import Archer
 
 from class_platform import Platform
 from class_player import Character
@@ -37,22 +38,48 @@ class FormChapter01(Form):
         self.tiempo_juego = 60000
         self.tiempo_disparo = 0
 
+        self.gruby_spritesheets = Support.load_sprite_sheets(
+            dir1="enemies", dir2="gruby", width=132, height=90
+        )
+
+        self.mask_spritesheets = Support.load_sprite_sheets(
+            dir1="character", dir2="MaskDude", width=32, height=32
+        )
+        self.char_spritesheets = Support.load_sprite_sheets("character", "1x", 64, 64)
+
+        self.red_hood_spritesheets = Support.load_sprite_sheets(
+            "character", "RedHood", 80, 64
+        )
+
+        self.items_spritesheets = Support.load_sprite_sheets(
+            dir1="items", dir2="Fruits", width=32, height=32, direction=False
+        )
+        self.block_size = 96
+
+        # SPRITES ENEMIGOS
+        self.gruby_enemy = Enemy(
+            s_sheet=self.gruby_spritesheets,
+            x=0,
+            y=0,
+            speed_walk=6,
+            speed_run=5,
+            gravity=14,
+            jump_power=30,
+            frame_rate_ms=150,
+            move_rate_ms=50,
+            jump_height=140,
+            p_scale=0.08,
+            interval_time_jump=300,
+        )
+
+    def init_level(self):
+        # Creacion de listas
         self.platform_list = []
         self.bullet_list = []
         self.items_list = []
         self.enemy_list = []
         self.block_list = []
 
-        self.SPRITES = Support.load_sprite_sheets(
-            dir1="character", dir2="MaskDude", width=32, height=32
-        )
-        self.SPRITES_P2 = Support.load_sprite_sheets("character", "1x", 64, 64)
-        self.items = Support.load_sprite_sheets(
-            dir1="items", dir2="Fruits", width=32, height=32, direction=False
-        )
-        self.block_size = 96
-
-    def init_level(self):
         self.items_looteados = 0
         self.tiempo_transcurrido = 0
         self.score = 0
@@ -63,15 +90,15 @@ class FormChapter01(Form):
                 x = column_num * 25
                 y = row_num * 25
                 if column == "c":
-                    self.jugador = Player(
-                        sprites=self.SPRITES_P2,
+                    self.jugador = Archer(
+                        sprites=self.red_hood_spritesheets,
                         x=x,
                         y=y,
                         speed_walk=6,
                         speed_run=12,
                         gravity=14,
                         jump_power=30,
-                        frame_rate_ms=100,
+                        frame_rate_ms=40,
                         move_rate_ms=50,
                         jump_height=140,
                         p_scale=1,
@@ -123,7 +150,20 @@ class FormChapter01(Form):
                     self.items_list.append(
                         Loot(
                             main_surface=self.surface,
-                            items=self.items,
+                            items=self.items_spritesheets,
+                            x=x,
+                            y=y,
+                            width=25,
+                            height=25,
+                        )
+                    )
+                if (
+                    column == "k"
+                ):  # Esto va a ser el item de las llaves para pasar de nivel
+                    self.items_list.append(
+                        Loot(
+                            main_surface=self.surface,
+                            items=self.items_spritesheets,
                             x=x,
                             y=y,
                             width=25,
@@ -133,6 +173,7 @@ class FormChapter01(Form):
                 if column == "e":
                     self.enemy_list.append(
                         Enemy(
+                            s_sheet=self.gruby_spritesheets,
                             x=x,
                             y=y,
                             speed_walk=6,
@@ -290,7 +331,7 @@ class FormChapter01(Form):
             y=400,
             width=100,
             height=100,
-            sprites=self.SPRITES,
+            sprites=self.mask_spritesheets,
             animation_delay=3,
         )
 
@@ -320,7 +361,7 @@ class FormChapter01(Form):
     def colision_player(self):
         contador = 0
         for enemigo in self.enemy_list:
-            if self.jugador.collition_rect.colliderect(enemigo.rect):
+            if self.jugador.collision_rect.colliderect(enemigo.rect):
                 print("IMPACTO ENEMY")
                 self.enemy_list.pop(contador)
                 self.score += 100
@@ -330,10 +371,11 @@ class FormChapter01(Form):
     def colision_items(self):
         contador = 0
         for item in self.items_list:
-            if self.jugador.collition_rect.colliderect(item.rect):
+            if self.jugador.collision_rect.colliderect(item.rect):
                 self.items_list.pop(contador)
                 self.score += 100
                 print(self.score)
+                print("IMPACTO ITEM")
                 self.items_looteados += 1
             contador += 1
 
@@ -344,6 +386,8 @@ class FormChapter01(Form):
                 and self.owner != enemy
                 and self.collide_rect.colliderect(enemy.rect)
             ):
+                self.score += 100
+                print(self.score)
                 print("IMPACTO ENEMY")
                 self.is_active = False
 
@@ -352,7 +396,7 @@ class FormChapter01(Form):
             self.jugador.lives = 5
 
     def you_win_metod(self):
-        if len(self.enemy_list) == 0:
+        if len(self.enemy_list) == 0:  # agregar condicion de orbes o algo asi
             self.you_win = True
             self.in_game = False
             self.set_active("form_you_win")
@@ -393,8 +437,8 @@ class FormChapter01(Form):
 
     def get_position(self):
         pos = []
-        pos.append(self.jugador.collition_rect.centerx)
-        pos.append(self.jugador.collition_rect.centery)
+        pos.append(self.jugador.collision_rect.centerx)
+        pos.append(self.jugador.collision_rect.centery)
         return pos
 
     def on_click_shoot_player(self):
@@ -408,8 +452,8 @@ class FormChapter01(Form):
         self.bullet_list.append(
             Bullet(
                 owner=self.jugador,
-                x_init=self.jugador.collition_rect.centerx,
-                y_init=self.jugador.collition_rect.centery - 90,
+                x_init=self.jugador.collision_rect.centerx,
+                y_init=self.jugador.collision_rect.centery - 90,
                 x_end=self.dir_shoot_x,
                 y_end=self.get_position()[1] - 90,
                 speed=10,
@@ -523,12 +567,12 @@ class FormChapter01(Form):
             pygame.draw.rect(self.surface, RED, self.main_char.rect, 3)
 
             pygame.draw.rect(self.surface, RED, self.jugador.rect, 3)
-            pygame.draw.rect(self.surface, RED, self.jugador.collition_rect, 3)
-            pygame.draw.rect(self.surface, RED, self.jugador.ground_collition_rect, 3)
+            pygame.draw.rect(self.surface, RED, self.jugador.collision_rect, 3)
+            pygame.draw.rect(self.surface, RED, self.jugador.ground_collision_rect, 3)
 
             for enemy in self.enemy_list:
                 pygame.draw.rect(self.surface, RED, enemy.rect, 3)
-                pygame.draw.rect(self.surface, RED, enemy.collition_rect, width=3)
+                pygame.draw.rect(self.surface, RED, enemy.collision_rect, width=3)
 
             for block in self.floor:
                 pygame.draw.rect(self.surface, RED, block.rect, 3)
@@ -538,7 +582,7 @@ class FormChapter01(Form):
 
             for bullet in self.bullet_list:
                 pygame.draw.rect(self.surface, RED, bullet.rect, 3)
-                pygame.draw.rect(self.surface, RED, bullet.collition_rect, width=3)
+                pygame.draw.rect(self.surface, RED, bullet.collision_rect, width=3)
                 # pygame.draw.rect(self.surface, RED, rect=self.rect, width=3)
 
             for item in self.items_list:

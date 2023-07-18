@@ -1,7 +1,6 @@
 import pygame
 from pygame.locals import *
 import sys
-from GUI_form_chapter_02 import FormChapter02
 from GUI_form_chapter_selection import FormChapterSelection
 from GUI_form_game_over import FormGameOver
 from GUI_form_init import FormInit
@@ -11,11 +10,12 @@ from GUI_form_title_screen import FormTitleScreen
 from GUI_form_you_win import FormYouWin
 from constantes import *
 from GUI_form import Form
-from GUI_form_chapter_01 import FormChapter01
 from debug_mod import set_mode
-from gui_form_menu_A import FormMenuA
 from GUI_form_score import FormScore
+from gui_form_menu_A import FormMenuA
 from gui_form_menu_C import FormMenuC
+from GUI_form_chapter_01 import FormChapter01
+from GUI_form_chapter_02 import FormChapter02
 from GUI_form_chapter_03 import FormChapter03
 
 flags = DOUBLEBUF
@@ -79,8 +79,8 @@ form_pause = FormPause(
     y=200,
     w=ANCHO_VENTANA * 0.60,
     h=ALTO_VENTANA * 0.60,
-    color_background=(0, 255, 255),
-    color_border=(255, 0, 255),
+    color_background=(VIOLET),
+    color_border=(RED),
     active=False,
 )
 
@@ -91,8 +91,8 @@ form_chapter_01 = FormChapter01(
     y=0,
     w=ANCHO_VENTANA,
     h=ALTO_VENTANA,
-    color_background=(0, 255, 255),
-    color_border=(255, 0, 255),
+    color_background=(VIOLET),
+    color_border=(RED),
     active=False,
 )
 
@@ -103,8 +103,8 @@ form_chapter_02 = FormChapter02(
     y=0,
     w=ANCHO_VENTANA,
     h=ALTO_VENTANA,
-    color_background=(0, 255, 255),
-    color_border=(255, 0, 255),
+    color_background=(VIOLET),
+    color_border=(RED),
     active=False,
 )
 
@@ -116,8 +116,8 @@ form_score = FormScore(
     y=0,
     w=ANCHO_VENTANA,
     h=ALTO_VENTANA,
-    color_background=(0, 255, 255),
-    color_border=(255, 0, 255),
+    color_background=(VIOLET),
+    color_border=(RED),
     active=False,
 )
 
@@ -152,8 +152,8 @@ form_menu_C = FormMenuC(
     y=0,
     w=ANCHO_VENTANA,
     h=ALTO_VENTANA,
-    color_background=(0, 255, 255),
-    color_border=(255, 0, 255),
+    color_background=(VIOLET),
+    color_border=(RED),
     active=False,
 )
 
@@ -164,8 +164,8 @@ form_chapter_03 = FormChapter03(
     y=0,
     w=ANCHO_VENTANA,
     h=ALTO_VENTANA,
-    color_background=(0, 255, 255),
-    color_border=(255, 0, 255),
+    color_background=(VIOLET),
+    color_border=(RED),
     active=False,
 )
 

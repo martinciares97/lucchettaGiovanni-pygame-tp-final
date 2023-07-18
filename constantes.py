@@ -34,6 +34,7 @@ YELLOW = (255, 174, 0)
 ORANGE = (255, 81, 0)
 GOLD = "Gold"
 MAGENTA = "Magenta"
+VIOLET = "Violet"
 
 # MOUSE CONSTANTS
 M_STATE_NORMAL = 0
