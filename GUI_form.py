@@ -7,9 +7,7 @@ from gui_button import Button
 class Form:
     forms_dict = {}
 
-    def __init__(
-        self, name, master_surface, x, y, w, h, color_background, color_border, active
-    ):
+    def __init__(self, name, master_surface, x, y, w, h, color_background, color_border, active):
         self.forms_dict[name] = self
         self.master_surface = master_surface
         self.x = x
@@ -20,12 +18,14 @@ class Form:
         self.color_border = color_border
 
         self.surface = pygame.Surface((w, h))
-        self.slave_rect = self.surface.get_rect()
-        self.slave_rect.x = x
-        self.slave_rect.y = y
+        self.slave_rect = self.surface.get_rect(x=x, y=y, w=w, h=h)
+
         self.active = active
         self.x = x
         self.y = y
+
+        # self.title = "form"
+        # self.controles = []
 
         if self.color_background != None:
             self.surface.fill(self.color_background)
@@ -45,9 +45,9 @@ class Form:
 
     @staticmethod
     def get_clave_active():
-        for aux_form_clave, aux_form_valor in Form.forms_dict.items():
-            if aux_form_valor.active:
-                return aux_form_clave
+        for clave, valor in Form.forms_dict.items():
+            if valor.active:
+                return clave
         return None
 
     def render(self):

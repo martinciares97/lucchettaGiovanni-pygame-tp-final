@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 from GUI_form import Form
 from GUI_form_chapter_01 import FormChapter01
-from background import Background
+from class_background import Background
 from gui_button import Button
 from gui_textbox import TextBox
 from gui_progressbar import ProgressBar
@@ -21,8 +21,8 @@ class FormPause(Form):
         self.bg = Background(
             x=0,
             y=0,
-            width=self.w,
-            height=self.h,
+            w=self.w,
+            h=self.h,
             path="assets/Background/Unknown Nights/New Letter.png",
         )
 

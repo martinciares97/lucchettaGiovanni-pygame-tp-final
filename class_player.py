@@ -4,15 +4,7 @@ from constantes import *
 
 class Character(pygame.sprite.Sprite):
     def __init__(
-        self,
-        main_surface: pygame.Surface,
-        x,
-        y,
-        width,
-        height,
-        sprites,
-        animation_delay=3,
-    ) -> None:
+            self, main_surface: pygame.Surface, x, y, width, height, sprites, animation_delay=3) -> None:
         super().__init__()
         self.main_surface = main_surface
         self.secondary_surface = pygame.Surface((width, height))
@@ -110,7 +102,8 @@ class Character(pygame.sprite.Sprite):
 
         sprite_sheet_name = self.state + "_" + self.direction
         self.animacion_activa = self.sprites[sprite_sheet_name]
-        sprite_index = (self.frame // self.animation_delay) % len(self.animacion_activa)
+        sprite_index = (
+            self.frame // self.animation_delay) % len(self.animacion_activa)
 
         self.secondary_surface = self.animacion_activa[sprite_index]
         self.frame += 1
@@ -143,7 +136,8 @@ class Character(pygame.sprite.Sprite):
         self.rect.move_ip(0, delta_y)
 
     def update_pos(self):
-        self.rect = self.secondary_surface.get_rect(topleft=(self.rect.x, self.rect.y))
+        self.rect = self.secondary_surface.get_rect(
+            topleft=(self.rect.x, self.rect.y))
         self.mask = pygame.mask.from_surface(self.secondary_surface)
 
     def draw(self):

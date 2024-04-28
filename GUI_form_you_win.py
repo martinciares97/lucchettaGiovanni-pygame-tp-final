@@ -2,7 +2,7 @@ import sqlite3
 import pygame
 from pygame.locals import *
 from GUI_form_score import FormScore
-from background import Background
+from class_background import Background
 from constantes import *
 from GUI_form import Form
 from gui_button import Button
@@ -22,8 +22,8 @@ class FormYouWin(Form):
         self.bg = Background(
             x=0,
             y=0,
-            width=self.w,
-            height=self.h,
+            w=self.w,
+            h=self.h,
             path="assets/Background/Unknown Nights/New Letter.png",
         )
 

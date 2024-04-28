@@ -13,11 +13,12 @@ from gui_button import Button
 from gui_label import Label
 from gui_textbox import TextBox
 from gui_progressbar import ProgressBar
-from loot import Loot
+from class_loot import Loot
 from object import Block
 from player import Player
 from enemigo import Enemy
-from background import Background, Parallax
+from class_background import Background
+from class_parallax import Parallax
 from bullet import Bullet
 from support import Support
 
@@ -145,8 +146,8 @@ class FormChapter03(Form):
                             items=self.items,
                             x=x,
                             y=y,
-                            width=25,
-                            height=25,
+                            w=25,
+                            h=25,
                         )
                     )
                 if column == "e":

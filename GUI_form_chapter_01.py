@@ -5,6 +5,7 @@ from os import listdir
 from os.path import join, isfile
 from class_archer import Archer
 
+
 from class_platform import Platform
 from class_player import Character
 from constantes import *
@@ -14,30 +15,36 @@ from gui_button import Button
 from gui_label import Label
 from gui_textbox import TextBox
 from gui_progressbar import ProgressBar
-from loot import Loot
+from class_loot import Loot
 from object import Block
 from player import Player
 from enemigo import Enemy
-from background import Background, Parallax
+from class_background import Background
+from class_parallax import Parallax
+from class_mosaico import Mosaico
 from bullet import Bullet
 from support import Support
+from class_nivel import Nivel
 
 
 class FormChapter01(Form):
-    def __init__(
-        self, name, master_surface, x, y, w, h, color_background, color_border, active
-    ):
-        super().__init__(
-            name, master_surface, x, y, w, h, color_background, color_border, active
-        )
+    def __init__(self, name, master_surface, x, y, w, h, color_background, color_border, active):
+        super().__init__(name, master_surface, x, y, w,
+                         h, color_background, color_border, active)
 
+        self.screen = master_surface
+        
         # --- GUI WIDGET ---
         self.game_over = False
         self.you_win = False
         self.in_game = False
         self.tiempo_juego = 60000
         self.tiempo_disparo = 0
-
+        
+        self.image = pygame.image.load("assets/Background/The Dawn/Reference-Image.png")
+        self.nivel_general = Nivel(self.surface, self.image, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+        
+        
         self.gruby_spritesheets = Support.load_sprite_sheets(
             dir1="enemies", dir2="gruby", width=132, height=90
         )
@@ -45,7 +52,8 @@ class FormChapter01(Form):
         self.mask_spritesheets = Support.load_sprite_sheets(
             dir1="character", dir2="MaskDude", width=32, height=32
         )
-        self.char_spritesheets = Support.load_sprite_sheets("character", "1x", 64, 64)
+        self.char_spritesheets = Support.load_sprite_sheets(
+            "character", "1x", 64, 64)
 
         self.red_hood_spritesheets = Support.load_sprite_sheets(
             "character", "RedHood", 80, 64
@@ -153,8 +161,8 @@ class FormChapter01(Form):
                             items=self.items_spritesheets,
                             x=x,
                             y=y,
-                            width=25,
-                            height=25,
+                            w=25,
+                            h=25,
                         )
                     )
                 if (
@@ -166,8 +174,8 @@ class FormChapter01(Form):
                             items=self.items_spritesheets,
                             x=x,
                             y=y,
-                            width=25,
-                            height=25,
+                            w=25,
+                            h=25,
                         )
                     )
                 if column == "e":
@@ -196,6 +204,8 @@ class FormChapter01(Form):
             None,
             "assets/Background/The Dawn/Layers/",
         )
+
+        # self.bg_mosaico = Mosaico()
 
         self.bt_pause = Button(
             master=self,
@@ -320,8 +330,8 @@ class FormChapter01(Form):
         self.static_background = Background(
             x=0,
             y=0,
-            width=self.w,
-            height=self.h,
+            w=self.w,
+            h=self.h,
             path="images/locations/set_bg_01/forest/all.png",
         )
 
@@ -504,13 +514,11 @@ class FormChapter01(Form):
             widget.update(lista_eventos)
 
         for bullet in self.bullet_list:
-            bullet.update(delta_ms, self.platform_list, self.enemy_list, self.jugador)
+            bullet.update(delta_ms, self.platform_list,
+                          self.enemy_list, self.jugador)
 
         for enemy in self.enemy_list:
             enemy.update(delta_ms, self.platform_list)
-
-        # self.main_char.handle_move(lista_eventos, keys, self.floor)
-        # self.main_char.update(delta_ms)
 
         self.jugador.events(
             delta_ms,
@@ -525,18 +533,8 @@ class FormChapter01(Form):
 
     def draw(self):
         super().draw()
-
-        # if (
-        #     self.main_char.rect.right - self.offset_x
-        #     >= ANCHO_VENTANA - self.scroll_area_width
-        #     and self.main_char.x_vel > 0
-        # ) or (
-        #     self.main_char.rect.left - self.offset_x <= self.scroll_area_width
-        #     and self.main_char.x_vel < 0
-        # ):
-        #     self.offset_x += self.main_char.x_vel
-
         self.bg_parallax.draw(self.surface)
+        self.nivel_general.draw()
 
         for block in self.block_list:
             block.draw(self.offset_x)
@@ -568,11 +566,13 @@ class FormChapter01(Form):
 
             pygame.draw.rect(self.surface, RED, self.jugador.rect, 3)
             pygame.draw.rect(self.surface, RED, self.jugador.collision_rect, 3)
-            pygame.draw.rect(self.surface, RED, self.jugador.ground_collision_rect, 3)
+            pygame.draw.rect(self.surface, RED,
+                             self.jugador.ground_collision_rect, 3)
 
             for enemy in self.enemy_list:
                 pygame.draw.rect(self.surface, RED, enemy.rect, 3)
-                pygame.draw.rect(self.surface, RED, enemy.collision_rect, width=3)
+                pygame.draw.rect(self.surface, RED,
+                                 enemy.collision_rect, width=3)
 
             for block in self.floor:
                 pygame.draw.rect(self.surface, RED, block.rect, 3)
@@ -582,7 +582,8 @@ class FormChapter01(Form):
 
             for bullet in self.bullet_list:
                 pygame.draw.rect(self.surface, RED, bullet.rect, 3)
-                pygame.draw.rect(self.surface, RED, bullet.collision_rect, width=3)
+                pygame.draw.rect(self.surface, RED,
+                                 bullet.collision_rect, width=3)
                 # pygame.draw.rect(self.surface, RED, rect=self.rect, width=3)
 
             for item in self.items_list:
